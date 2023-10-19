@@ -13,7 +13,6 @@ public class TestMealPlanning extends AbstractTestSpoo {
     private int calories = 2000;
 
     @Test
-    @Disabled
     void addToMealPlan() {
 
         given()
@@ -51,7 +50,6 @@ public class TestMealPlanning extends AbstractTestSpoo {
     }
 
     @Test
-    @Disabled
     void clearMealPlanDay() {
         given()
                 .queryParam("apiKey", getApiKey())
@@ -63,7 +61,6 @@ public class TestMealPlanning extends AbstractTestSpoo {
     }
 
     @Test
-    @Disabled
     void generateMealPlan() {
 
         given()
@@ -74,8 +71,6 @@ public class TestMealPlanning extends AbstractTestSpoo {
                 .get(getUrl() + "mealplanner/generate")
                 .then()
                 .statusCode(200);
-
-
     }
 
 
@@ -124,9 +119,7 @@ public class TestMealPlanning extends AbstractTestSpoo {
     @Test
     @Disabled
     void getShoppingList() {
-
-
-        String id = given()
+       String id = given()
                 .queryParam("apiKey", getApiKey())
                 .queryParam("hash", getHash())
                 .body("{\n" +
@@ -163,9 +156,7 @@ public class TestMealPlanning extends AbstractTestSpoo {
                 .delete(getUrl() + "mealplanner/" + getUsername() + "/shopping-list/items/" + id)
                 .then()
                 .statusCode(200);
-
-
-    }
+   }
 
     @Test
     void computeShoppingList() {
@@ -185,7 +176,6 @@ public class TestMealPlanning extends AbstractTestSpoo {
                 .statusCode(200)
                 .assertThat()
                 .body("aisles.items.name", hasSize(2));
-
     }
 
 }

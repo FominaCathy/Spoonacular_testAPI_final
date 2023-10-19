@@ -6,7 +6,6 @@ import io.restassured.path.json.JsonPath;
 import org.example.Spoonacular.Equipment;
 import org.example.Spoonacular.EquipmentRecipe;
 import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.yaml.snakeyaml.Yaml;
 
@@ -35,7 +34,6 @@ public class TestRecipe extends AbstractTestSpoo {
     }
 
     @Test
-    @Disabled
     void searchRecipes() {
 
         given()
@@ -53,7 +51,6 @@ public class TestRecipe extends AbstractTestSpoo {
     }
 
     @Test
-    @Disabled
     void searchRecipesByNutrients() {
         int maxCalory = 500;
 
@@ -72,7 +69,6 @@ public class TestRecipe extends AbstractTestSpoo {
 
 
     @Test
-    @Disabled
     void getRandomRecipes() {
         String tags = given()
                 .queryParam("apiKey", getApiKey())
@@ -92,7 +88,6 @@ public class TestRecipe extends AbstractTestSpoo {
 
 
     @Test
-    @Disabled
     void autocompleteRecipeSearch() {
         given()
                 .queryParam("apiKey", getApiKey())
@@ -111,7 +106,6 @@ public class TestRecipe extends AbstractTestSpoo {
 
 
     @Test
-    @Disabled
     void tasteByID() {
         JsonPath response = given()
                 .queryParam("apiKey", getApiKey())
@@ -128,7 +122,6 @@ public class TestRecipe extends AbstractTestSpoo {
 
 
     @Test
-    @Disabled
     void equipmentByID() {
         EquipmentRecipe equipmentRecipe = given()
                 .queryParam("apiKey", getApiKey())
@@ -150,7 +143,6 @@ public class TestRecipe extends AbstractTestSpoo {
 
 
     @Test
-    @Disabled
     void priceBreakdownByID() {
         given()
                 .queryParam("apiKey", getApiKey())
@@ -168,7 +160,6 @@ public class TestRecipe extends AbstractTestSpoo {
 
 
     @Test
-    @Disabled
     void nutritionByID() {
 
         given()
@@ -181,12 +172,10 @@ public class TestRecipe extends AbstractTestSpoo {
                 .body("nutrients[0].amount", equalTo(899.16f))
                 .body("fat", equalTo("45g"))
                 .body("carbs", equalTo("111g"));
-
     }
 
 
     @Test
-    @Disabled
     void ingredientsByID() {
         given()
                 .queryParam("apiKey", getApiKey())
@@ -232,12 +221,11 @@ public class TestRecipe extends AbstractTestSpoo {
                 .toString();
 
         assertThat(title, equalTo("Spaghetti Carbonara"));
-
     }
 
 
     @Test
-    @Disabled
+
     void summarizeRecipe() {
 
         given()
@@ -247,9 +235,7 @@ public class TestRecipe extends AbstractTestSpoo {
                 .assertThat()
                 .statusCode(200)
                 .body("title", equalTo("Soy-and-Ginger-Glazed Salmon with Udon Noodles"));
-
     }
-
 
 }
 
