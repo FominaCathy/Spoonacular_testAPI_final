@@ -1,0 +1,508 @@
+{
+	"info": {
+		"_postman_id": "d2bef338-0576-4a40-8cb0-57cd50d849b8",
+		"name": "Meal Planning",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "24640891"
+	},
+	"item": [
+		{
+			"name": "Connect User",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.collectionVariables.set(\"hash\", pm.response.json()[\"hash\"]);\r",
+							"pm.collectionVariables.set(\"username\", pm.response.json()[\"username\"]);\r",
+							"\r",
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "apikey",
+					"apikey": [
+						{
+							"key": "value",
+							"value": "{{apiKey}}",
+							"type": "string"
+						},
+						{
+							"key": "key",
+							"value": "apiKey",
+							"type": "string"
+						},
+						{
+							"key": "in",
+							"value": "query",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"username\": \"TestUser\",\r\n    \"firstName\": \"First name\",\r\n    \"lastName\": \"Last name\",\r\n    \"email\": \"email\"\r\n}"
+				},
+				"url": {
+					"raw": "https://api.spoonacular.com/users/connect",
+					"protocol": "https",
+					"host": [
+						"api",
+						"spoonacular",
+						"com"
+					],
+					"path": [
+						"users",
+						"connect"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Generate Meal Plan",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"check calories\", function () {\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData[\"nutrients\"][\"calories\"]<= pm.variables.get(\"targetCalories\")).true ;\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "apikey",
+					"apikey": [
+						{
+							"key": "in",
+							"value": "query",
+							"type": "string"
+						},
+						{
+							"key": "value",
+							"value": "{{apiKey}}",
+							"type": "string"
+						},
+						{
+							"key": "key",
+							"value": "apiKey",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{url}}/mealplanner/generate?timeFrame=day&targetCalories={{targetCalories}}",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"mealplanner",
+						"generate"
+					],
+					"query": [
+						{
+							"key": "timeFrame",
+							"value": "day"
+						},
+						{
+							"key": "targetCalories",
+							"value": "{{targetCalories}}"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Add to Meal Plan",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "apikey",
+					"apikey": [
+						{
+							"key": "in",
+							"value": "query",
+							"type": "string"
+						},
+						{
+							"key": "value",
+							"value": "{{apiKey}}",
+							"type": "string"
+						},
+						{
+							"key": "key",
+							"value": "apiKey",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"date\": 1589500800,\r\n    \"slot\": 1,\r\n    \"position\": 0,\r\n    \"type\": \"INGREDIENTS\",\r\n    \"value\": {\r\n        \"ingredients\": [\r\n            {\r\n                \"name\": \"1 banana\"\r\n            }\r\n        ]\r\n    }\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://api.spoonacular.com/mealplanner/{{username}}/items?hash={{hash}}",
+					"protocol": "https",
+					"host": [
+						"api",
+						"spoonacular",
+						"com"
+					],
+					"path": [
+						"mealplanner",
+						"{{username}}",
+						"items"
+					],
+					"query": [
+						{
+							"key": "hash",
+							"value": "{{hash}}"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Clear Meal Plan Day",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "apikey",
+					"apikey": [
+						{
+							"key": "in",
+							"value": "query",
+							"type": "string"
+						},
+						{
+							"key": "value",
+							"value": "{{apiKey}}",
+							"type": "string"
+						},
+						{
+							"key": "key",
+							"value": "apiKey",
+							"type": "string"
+						}
+					]
+				},
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "{{url}}/mealplanner/{{username}}/day/2020-05-15?hash={{hash}}",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"mealplanner",
+						"{{username}}",
+						"day",
+						"2020-05-15"
+					],
+					"query": [
+						{
+							"key": "hash",
+							"value": "{{hash}}"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Delete from Meal Plan",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "apikey",
+					"apikey": [
+						{
+							"key": "in",
+							"value": "query",
+							"type": "string"
+						},
+						{
+							"key": "value",
+							"value": "{{apiKey}}",
+							"type": "string"
+						},
+						{
+							"key": "key",
+							"value": "apiKey",
+							"type": "string"
+						}
+					]
+				},
+				"method": "DELETE",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{url}}/mealplanner/{{username}}}/items/{{id_plan}}?hash={{hash}}",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"mealplanner",
+						"{{username}}}",
+						"items",
+						"{{id_plan}}"
+					],
+					"query": [
+						{
+							"key": "hash",
+							"value": "{{hash}}"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get Meal Plan Day",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "apikey",
+					"apikey": [
+						{
+							"key": "in",
+							"value": "query",
+							"type": "string"
+						},
+						{
+							"key": "value",
+							"value": "{{apiKey}}",
+							"type": "string"
+						},
+						{
+							"key": "key",
+							"value": "apiKey",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{url}}/mealplanner/{{username}}/day/2020-05-15?hash={{hash}}",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"mealplanner",
+						"{{username}}",
+						"day",
+						"2020-05-15"
+					],
+					"query": [
+						{
+							"key": "hash",
+							"value": "{{hash}}"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Generate Shopping List",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "apikey",
+					"apikey": [
+						{
+							"key": "in",
+							"value": "query",
+							"type": "string"
+						},
+						{
+							"key": "value",
+							"value": "{{apiKey}}",
+							"type": "string"
+						},
+						{
+							"key": "key",
+							"value": "apiKey",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"url": {
+					"raw": "{{url}}/mealplanner/{{username}}/shopping-list/2020-05-15/2020-05-15?hash={{hash}}",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"mealplanner",
+						"{{username}}",
+						"shopping-list",
+						"2020-05-15",
+						"2020-05-15"
+					],
+					"query": [
+						{
+							"key": "hash",
+							"value": "{{hash}}"
+						}
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "hash",
+			"value": "34f8f504752c1d1df2eb6b22df45e36701961310",
+			"type": "string"
+		},
+		{
+			"key": "username",
+			"value": "testuser271",
+			"type": "string"
+		},
+		{
+			"key": "spoonacularPassword",
+			"value": "salsachickenwith25hamburgersoup",
+			"type": "string"
+		},
+		{
+			"key": "id_plan",
+			"value": "21092062",
+			"type": "string"
+		},
+		{
+			"key": "id_item",
+			"value": "1699882",
+			"type": "string"
+		},
+		{
+			"key": "targetCalories",
+			"value": "2000",
+			"type": "string"
+		}
+	]
+}

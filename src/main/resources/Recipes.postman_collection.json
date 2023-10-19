@@ -1,0 +1,930 @@
+{
+	"info": {
+		"_postman_id": "74f9416b-b0ec-4ac6-84d5-b6c2e6719f05",
+		"name": "Recipes",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "24640891"
+	},
+	"item": [
+		{
+			"name": "Search Recipes",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"\r",
+							"pm.test(\"Title include query \", function () {\r",
+							"    var jsonData = pm.response.json();\r",
+							"    flag = true\r",
+							"    var query_recipe = pm.variables.get(\"query_recipes\").toLowerCase(); \r",
+							"    for (i = 0; i < jsonData[\"results\"].length; i++){\r",
+							"\r",
+							"        if (!jsonData[\"results\"][i][\"title\"].toLowerCase().includes(query_recipe)){\r",
+							"            flag = false;\r",
+							"            break;\r",
+							"        }\r",
+							"    }\r",
+							"    pm.expect(flag).true;\r",
+							"});\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "apikey",
+					"apikey": [
+						{
+							"key": "in",
+							"value": "query",
+							"type": "string"
+						},
+						{
+							"key": "value",
+							"value": "{{apiKey}}",
+							"type": "string"
+						},
+						{
+							"key": "key",
+							"value": "apiKey",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{url}}/recipes/complexSearch?number={{number}}&query={{query_recipes}}",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"recipes",
+						"complexSearch"
+					],
+					"query": [
+						{
+							"key": "number",
+							"value": "{{number}}"
+						},
+						{
+							"key": "query",
+							"value": "{{query_recipes}}"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Search Recipes by Nutrients",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Max Calories in recipe: \", function () {\r",
+							"    var jsonData = pm.response.json();\r",
+							"    flag = true\r",
+							"    var max_calories = pm.variables.get(\"maxCalories\");\r",
+							"    for (i = 0; i < jsonData.length; i++){\r",
+							"        var calories = parseInt(jsonData[i][\"calories\"]);\r",
+							"        if ( calories  > max_calories){\r",
+							"            flag = false;\r",
+							"            break;\r",
+							"        }\r",
+							"    }\r",
+							"    pm.expect(flag).true;\r",
+							"});\r",
+							"\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "apikey",
+					"apikey": [
+						{
+							"key": "in",
+							"value": "query",
+							"type": "string"
+						},
+						{
+							"key": "value",
+							"value": "{{apiKey}}",
+							"type": "string"
+						},
+						{
+							"key": "key",
+							"value": "apiKey",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{url}}/recipes/findByNutrients?number={{number}}&maxCalories={{maxCalories}}",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"recipes",
+						"findByNutrients"
+					],
+					"query": [
+						{
+							"key": "number",
+							"value": "{{number}}"
+						},
+						{
+							"key": "maxCalories",
+							"value": "{{maxCalories}}"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get Random Recipes",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"\r",
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Your test name\", function () {\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData[\"recipes\"][\"vegetarian\"] == true);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "apikey",
+					"apikey": [
+						{
+							"key": "in",
+							"value": "query",
+							"type": "string"
+						},
+						{
+							"key": "value",
+							"value": "{{apiKey}}",
+							"type": "string"
+						},
+						{
+							"key": "key",
+							"value": "apiKey",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "https://api.spoonacular.com/recipes/random?tags=vegetarian",
+					"protocol": "https",
+					"host": [
+						"api",
+						"spoonacular",
+						"com"
+					],
+					"path": [
+						"recipes",
+						"random"
+					],
+					"query": [
+						{
+							"key": "tags",
+							"value": "vegetarian"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Autocomplete Recipe Search",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Autocomplete Recipe Search\", function () {\r",
+							"    var jsonData = pm.response.json();\r",
+							"    flag = true\r",
+							"    var expert = pm.variables.get(\"query\") \r",
+							"    for (i = 0; i < jsonData.length; i++){\r",
+							"        if (!jsonData[i][\"title\"].includes(expert)){\r",
+							"            flag = false\r",
+							"        }\r",
+							"        \r",
+							"    }\r",
+							"\r",
+							"    pm.expect(flag).true;\r",
+							"});\r",
+							"\r",
+							"\r",
+							"pm.test(\"count items in response\", function () {\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData.length <= pm.variables.get(\"number\")).true;\r",
+							"     \r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "apikey",
+					"apikey": [
+						{
+							"key": "in",
+							"value": "query",
+							"type": "string"
+						},
+						{
+							"key": "value",
+							"value": "{{apiKey}}",
+							"type": "string"
+						},
+						{
+							"key": "key",
+							"value": "apiKey",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{url}}/recipes/autocomplete?query={{query}}&number={{number}}",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"recipes",
+						"autocomplete"
+					],
+					"query": [
+						{
+							"key": "query",
+							"value": "{{query}}"
+						},
+						{
+							"key": "number",
+							"value": "{{number}}"
+						},
+						{
+							"key": "addProductInformation",
+							"value": "true",
+							"disabled": true
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Taste by ID",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"recipe's taste sweetness in response\", function () {\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(parseFloat(jsonData[\"sweetness\"])).to.eql(parseFloat(pm.variables.get(\"sweetness\")));\r",
+							"    \r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"auth": {
+					"type": "apikey",
+					"apikey": [
+						{
+							"key": "in",
+							"value": "query",
+							"type": "string"
+						},
+						{
+							"key": "value",
+							"value": "{{apiKey}}",
+							"type": "string"
+						},
+						{
+							"key": "key",
+							"value": "apiKey",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{url}}/recipes/{{id_for_taste}}/tasteWidget.json",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"recipes",
+						"{{id_for_taste}}",
+						"tasteWidget.json"
+					],
+					"query": [
+						{
+							"key": "id",
+							"value": "{{id_for_taste}}",
+							"disabled": true
+						},
+						{
+							"key": "normalize",
+							"value": "false",
+							"disabled": true
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Equipment by ID",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"equipment 0\", function () {\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData[\"equipment\"][0][\"name\"]).to.eql(\"oven\");\r",
+							"});\r",
+							"\r",
+							"pm.test(\"equipment 1\", function () {\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData[\"equipment\"][1][\"name\"]).to.eql(\"pie form\");\r",
+							"});\r",
+							"\r",
+							"pm.test(\"equipment 2\", function () {\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData[\"equipment\"][2][\"name\"]).to.eql(\"bowl\");\r",
+							"});\r",
+							"\r",
+							"pm.test(\"equipment 3\", function () {\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData[\"equipment\"][3][\"image\"]).to.eql(\"pan.png\");\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "apikey",
+					"apikey": [
+						{
+							"key": "in",
+							"value": "query",
+							"type": "string"
+						},
+						{
+							"key": "value",
+							"value": "{{apiKey}}",
+							"type": "string"
+						},
+						{
+							"key": "key",
+							"value": "apiKey",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{url}}/recipes/{{id_eqip}}/equipmentWidget.json",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"recipes",
+						"{{id_eqip}}",
+						"equipmentWidget.json"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Price Breakdown by ID",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Response time is less than 2000ms\", function () {\r",
+							"    pm.expect(pm.response.responseTime).to.be.below(2000);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"totalCost\", function () {\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData[\"totalCost\"]).to.eql(832.45);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"totalCostPerServing\", function () {\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData[\"totalCostPerServing\"]).to.eql(104.06);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"price blueberries\", function () {\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData[\"ingredients\"][0][\"price\"]).to.eql(174.43);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "apikey",
+					"apikey": [
+						{
+							"key": "in",
+							"value": "query",
+							"type": "string"
+						},
+						{
+							"key": "value",
+							"value": "{{apiKey}}",
+							"type": "string"
+						},
+						{
+							"key": "key",
+							"value": "apiKey",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{url}}/recipes/{{id_eqip}}/priceBreakdownWidget.json",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"recipes",
+						"{{id_eqip}}",
+						"priceBreakdownWidget.json"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Ingredients by ID",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Response time is less than 200ms\", function () {\r",
+							"    pm.expect(pm.response.responseTime).to.be.below(2000);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Content-Type is present\", function () {\r",
+							"    pm.expect(pm.response.to.have.header(\"Content-Type\"), \"application/json\");\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Containe blueberries\", function () {\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData[\"ingredients\"][0][\"name\"]).to.eql(\"blueberries\");\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Your test name\", function () {\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData[\"ingredients\"][0][\"amount\"][\"metric\"][\"value\"]).to.eql(222.0);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "apikey",
+					"apikey": [
+						{
+							"key": "in",
+							"value": "query",
+							"type": "string"
+						},
+						{
+							"key": "value",
+							"value": "{{apiKey}}",
+							"type": "string"
+						},
+						{
+							"key": "key",
+							"value": "apiKey",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "https://api.spoonacular.com/recipes/{{id_eqip}}/ingredientWidget.json",
+					"protocol": "https",
+					"host": [
+						"api",
+						"spoonacular",
+						"com"
+					],
+					"path": [
+						"recipes",
+						"{{id_eqip}}",
+						"ingredientWidget.json"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Nutrition by ID",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"\r",
+							"pm.test(\"Return calories\", function () {\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData[\"calories\"]).eql(pm.variables.get(\"calories\"));\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Return carbs\", function () {\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData[\"carbs\"]).eql(pm.variables.get(\"carbs\"));\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Return fat\", function () {\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData[\"fat\"]).eql(pm.variables.get(\"fat\"));\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "apikey",
+					"apikey": [
+						{
+							"key": "in",
+							"value": "query",
+							"type": "string"
+						},
+						{
+							"key": "value",
+							"value": "{{apiKey}}",
+							"type": "string"
+						},
+						{
+							"key": "key",
+							"value": "apiKey",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{url}}/recipes/{{id_eqip}}/nutritionWidget.json",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"recipes",
+						"{{id_eqip}}",
+						"nutritionWidget.json"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Summarize Recipe",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Your test name\", function () {\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData[\"title\"]).to.eql(\"Soy-and-Ginger-Glazed Salmon with Udon Noodles\");\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "apikey",
+					"apikey": [
+						{
+							"key": "in",
+							"value": "query",
+							"type": "string"
+						},
+						{
+							"key": "value",
+							"value": "{{apiKey}}",
+							"type": "string"
+						},
+						{
+							"key": "key",
+							"value": "apiKey",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "https://api.spoonacular.com/recipes/4632/summary",
+					"protocol": "https",
+					"host": [
+						"api",
+						"spoonacular",
+						"com"
+					],
+					"path": [
+						"recipes",
+						"4632",
+						"summary"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Analyze Recipe",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Your test name\", function () {\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData[\"title\"]).to.eql( \"Spaghetti Carbonara\");\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "apikey",
+					"apikey": [
+						{
+							"key": "value",
+							"value": "{{apiKey}}",
+							"type": "string"
+						},
+						{
+							"key": "key",
+							"value": "apiKey",
+							"type": "string"
+						},
+						{
+							"key": "in",
+							"value": "query",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"title\": \"Spaghetti Carbonara\",\r\n    \"servings\": 2,\r\n    \"ingredients\": [\r\n        \"1 lb spaghetti\",\r\n        \"3.5 oz pancetta\",\r\n        \"2 Tbsps olive oil\",\r\n        \"1  egg\",\r\n        \"0.5 cup parmesan cheese\"\r\n    ],\r\n    \"instructions\": \"Bring a large pot of water to a boil and season generously with salt. Add the pasta to the water once boiling and cook until al dente. Reserve 2 cups of cooking water and drain the pasta. \"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{url}}/recipes/analyze",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"recipes",
+						"analyze"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "number",
+			"value": "10",
+			"type": "string"
+		},
+		{
+			"key": "query",
+			"value": "chick",
+			"type": "string"
+		},
+		{
+			"key": "query_recipes",
+			"value": "pasta",
+			"type": "string"
+		},
+		{
+			"key": "id_for_taste",
+			"value": "69095",
+			"type": "string"
+		},
+		{
+			"key": "sweetness",
+			"value": "48.35",
+			"type": "string"
+		},
+		{
+			"key": "length_resp",
+			"value": "7",
+			"type": "string"
+		},
+		{
+			"key": "id_eqip",
+			"value": "1003464",
+			"type": "string"
+		},
+		{
+			"key": "calories",
+			"value": "899",
+			"type": "string"
+		},
+		{
+			"key": "carbs",
+			"value": "111g",
+			"type": "string"
+		},
+		{
+			"key": "fat",
+			"value": "45g",
+			"type": "string"
+		},
+		{
+			"key": "protein",
+			"value": "11g",
+			"type": "string"
+		},
+		{
+			"key": "minProtein",
+			"value": "10",
+			"type": "string"
+		},
+		{
+			"key": "maxFat",
+			"value": "30",
+			"type": "string"
+		},
+		{
+			"key": "maxCalories",
+			"value": "500",
+			"type": "string"
+		}
+	]
+}
