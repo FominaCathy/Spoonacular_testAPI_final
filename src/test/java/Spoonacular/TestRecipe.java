@@ -5,6 +5,7 @@ import io.restassured.http.Method;
 import io.restassured.path.json.JsonPath;
 import org.example.Spoonacular.Equipment;
 import org.example.Spoonacular.EquipmentRecipe;
+import org.example.Spoonacular.Taste;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.yaml.snakeyaml.Yaml;
@@ -107,7 +108,7 @@ public class TestRecipe extends AbstractTestSpoo {
 
     @Test
     void tasteByID() {
-        JsonPath response = given()
+        Taste taste = given()
                 .queryParam("apiKey", getApiKey())
                 .contentType("application/json")
                 .when()
@@ -115,11 +116,12 @@ public class TestRecipe extends AbstractTestSpoo {
                 .then()
                 .statusCode(200)
                 .extract()
-                .jsonPath();
+                .as(Taste.class);
 
-        assertThat(response.get("sweetness"), equalTo(48.35F));
+        assertThat(taste.getSweetness(), equalTo(48.35F));
+        assertThat(taste.getSaltiness(), equalTo(45.48F));
+        assertThat(taste.getBitterness(), equalTo(19.25F));
     }
-
 
     @Test
     void equipmentByID() {

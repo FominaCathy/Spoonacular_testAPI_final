@@ -1,5 +1,6 @@
 package Spoonacular;
 
+import com.github.tomakehurst.wiremock.matching.StringValuePattern;
 import org.junit.jupiter.api.BeforeAll;
 
 import java.io.FileInputStream;

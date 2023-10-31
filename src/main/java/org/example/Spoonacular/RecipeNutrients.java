@@ -1,8 +1,7 @@
 
 package org.example.Spoonacular;
 
-//import javax.annotation.Generated;
-
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
@@ -18,8 +17,12 @@ import com.fasterxml.jackson.annotation.JsonPropertyOrder;
         "fat",
         "carbs"
 })
-//@Generated("jsonschema2pojo")
-public class RecipeNutrients {
+@JsonIgnoreProperties(
+        {"bad", "good", "nutrients", "properties", "flavonoids", "ingredients", "caloricBreakdown",
+                "weightPerServing", "expires", "isStale"}
+)
+
+public class RecipeNutrients extends Result{
 
     @JsonProperty("id")
     private Integer id;
