@@ -159,7 +159,7 @@ public class TestMealPlanningMok extends AbstractTestSpooMok {
 
         logger.debug("создание мока для GET /mealplanner/username/shopping-list/2020-05-15/2020-05-15");
 
-        stubFor(get(urlPathMatching("/mealplanner/" + getUsername() + "/shopping-list/.*"))
+        stubFor(get(urlPathEqualTo("/mealplanner/" + getUsername() + "/shopping-list/2020-05-15/2020-05-15"))
                 .willReturn(aResponse()
                         .withStatus(200)));
 
@@ -175,7 +175,7 @@ public class TestMealPlanningMok extends AbstractTestSpooMok {
 
         HttpResponse response = httpClient.execute(request);
 
-        verify(1, getRequestedFor(urlPathMatching("/mealplanner/" + getUsername() + "/shopping-list/.*")));
+        verify(1, getRequestedFor(urlPathEqualTo("/mealplanner/" + getUsername() + "/shopping-list/2020-05-15/2020-05-15")));
         assertEquals(200, response.getStatusLine().getStatusCode());
 
     }
