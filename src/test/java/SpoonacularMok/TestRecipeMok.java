@@ -1,12 +1,8 @@
 package SpoonacularMok;
 
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.github.tomakehurst.wiremock.client.WireMock;
-import io.restassured.path.json.JsonPath;
 import org.apache.http.HttpResponse;
-import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.utils.URIBuilder;
@@ -14,40 +10,30 @@ import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.example.Spoonacular.*;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
-import org.yaml.snakeyaml.Yaml;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-import java.io.*;
+import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
-import static Spoonacular.AbstractTestSpoo.getApiKey;
+import static com.github.tomakehurst.wiremock.client.WireMock.equalTo;
 import static com.github.tomakehurst.wiremock.client.WireMock.*;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-
 public class TestRecipeMok extends AbstractTestSpooMok {
-    private static HashMap<String, String> recipe;
 
-    public TestRecipeMok() throws FileNotFoundException {
-        //данные для запросов Recipe
-        InputStream inputStream = new FileInputStream(new File("src/main/resources/recipe.yml"));
-        Yaml yaml = new Yaml();
-        recipe = yaml.loadAs(inputStream, HashMap.class);
+    private static final Logger logger = LoggerFactory.getLogger(TestRecipeMok.class);
 
-    }
-
-    //
     @Test
-    @Disabled
     void searchRecipes() throws IOException, URISyntaxException {
+        logger.info("тест: searchRecipes - запущен");
         Result resultOne = new Result();
         resultOne.setTitle("Pasta carbonara");
         Result resultTwo = new Result();
@@ -61,10 +47,12 @@ public class TestRecipeMok extends AbstractTestSpooMok {
         SearchResipes bodyResponse = new SearchResipes();
         bodyResponse.setResults(listResult);
 
-        ObjectMapper mapper = new ObjectMapper();
+        logger.info("созданы данные для заглушки. тип: " + SearchResipes.class);
 
+        ObjectMapper mapper = new ObjectMapper();
+        logger.debug("создание мока для GET /recipes/complexSearch");
         stubFor(get(urlPathEqualTo("/recipes/complexSearch"))
-                .withQueryParam("query", WireMock.equalTo(recipe.get("query_recipes")))
+                .withQueryParam("query", equalTo("pasta"))
                 .willReturn(aResponse()
                         .withStatus(200)
                         .withBody(mapper.writeValueAsString(bodyResponse))
@@ -75,9 +63,10 @@ public class TestRecipeMok extends AbstractTestSpooMok {
 
         URI uri = new URIBuilder(request.getURI())
                 .addParameter("apiKey", getApiKey())
-                .addParameter("query", recipe.get("query_recipes"))
+                .addParameter("query", "pasta")
                 .build();
         request.setURI(uri);
+        logger.debug("создан http клиент");
 
         HttpResponse responseRecipes = httpClient.execute(request);
 
@@ -86,14 +75,13 @@ public class TestRecipeMok extends AbstractTestSpooMok {
         SearchResipes bodyResponseRecipes =
                 mapper.readValue(responseRecipes.getEntity().getContent(), SearchResipes.class);
         for (Result item : bodyResponseRecipes.getResults()) {
-            assertThat(item.getTitle(), containsStringIgnoringCase(recipe.get("query_recipes")));
+            assertThat(item.getTitle(), containsStringIgnoringCase("pasta"));
         }
     }
 
-
     @Test
-    @Disabled
     void searchRecipesByNutrients() throws URISyntaxException, IOException {
+        logger.info("тест: searchRecipesByNutrients - запущен");
         int maxCalory = 500;
         ObjectMapper mapper = new ObjectMapper();
         ListRecipe recipes = new ListRecipe();
@@ -108,6 +96,8 @@ public class TestRecipeMok extends AbstractTestSpooMok {
 
         recipes.setListRecipe(listRecipe);
 
+        logger.info("созданы данные для заглушки. тип: " + ListRecipe.class);
+        logger.debug("создание мока для GET /recipes/findByNutrients");
         stubFor(get(urlPathEqualTo("/recipes/findByNutrients"))
                 .withQueryParam("maxCalories", equalTo("500"))
                 .willReturn(aResponse()
@@ -120,6 +110,8 @@ public class TestRecipeMok extends AbstractTestSpooMok {
                 .addParameter("maxCalories", "500")
                 .build();
         request.setURI(uri);
+        logger.debug("создан http клиент");
+
         HttpResponse response = httpClient.execute(request);
 
         verify(1, getRequestedFor(urlPathEqualTo("/recipes/findByNutrients")));
@@ -129,13 +121,13 @@ public class TestRecipeMok extends AbstractTestSpooMok {
         for (RecipeNutrients item : checkBody.getListRecipe()) {
             assertTrue(item.getCalories() < 500);
         }
-
     }
 
-
     @Test
-    @Disabled
     void getRandomRecipes() throws URISyntaxException, IOException {
+        logger.info("тест: getRandomRecipes - запущен");
+
+        logger.debug("создание мока для GET /recipes/random");
 
         stubFor(get(urlPathEqualTo("/recipes/random"))
                 .withQueryParam("tags", equalTo("vegetarian"))
@@ -149,6 +141,8 @@ public class TestRecipeMok extends AbstractTestSpooMok {
                 .addParameter("tags", "vegetarian")
                 .build();
         request.setURI(uri);
+        logger.debug("создан http клиент");
+
         HttpResponse response = httpClient.execute(request);
 
         verify(getRequestedFor(urlPathEqualTo("/recipes/random")));
@@ -160,6 +154,8 @@ public class TestRecipeMok extends AbstractTestSpooMok {
 
     @Test
     void autocompleteRecipeSearch() throws IOException, URISyntaxException {
+        logger.info("тест: autocompleteRecipeSearch - запущен");
+
         Result resultOne = new Result();
         resultOne.setTitle("chicken");
         Result resultTwo = new Result();
@@ -173,7 +169,11 @@ public class TestRecipeMok extends AbstractTestSpooMok {
         SearchResipes bodyResponse = new SearchResipes();
         bodyResponse.setResults(listResult);
 
+        logger.info("созданы данные для заглушки. тип: " + SearchResipes.class);
+
         ObjectMapper mapper = new ObjectMapper();
+
+        logger.debug("создание мока для GET /recipes/autocomplete");
 
         stubFor(get(urlPathEqualTo("/recipes/autocomplete"))
                 .withQueryParam("query", equalTo("chick"))
@@ -190,6 +190,7 @@ public class TestRecipeMok extends AbstractTestSpooMok {
                 .addParameter("query", "chick")
                 .build();
         request.setURI(uri);
+        logger.debug("создан http клиент");
 
         HttpResponse responseRecipes = httpClient.execute(request);
 
@@ -203,14 +204,18 @@ public class TestRecipeMok extends AbstractTestSpooMok {
     }
 
     @Test
-    @Disabled
     void tasteByID() throws IOException, URISyntaxException {
-        //создадим мок объект
+        logger.info("тест: tasteByID - запущен");
+
         ObjectMapper mapper = new ObjectMapper();
         Taste bodyResponse = new Taste();
         bodyResponse.setSweetness(48.35F);
         bodyResponse.setSaltiness(45.48F);
         bodyResponse.setBitterness(19.25F);
+
+        logger.info("созданы данные для заглушки. тип: " + Taste.class);
+
+        logger.debug("создание мока для GET /recipes/69095/tasteWidget.json");
 
         stubFor(get(urlPathEqualTo("/recipes/69095/tasteWidget.json"))
                 .willReturn(aResponse()
@@ -224,6 +229,7 @@ public class TestRecipeMok extends AbstractTestSpooMok {
                 .addParameter("apiKey", getApiKey())
                 .build();
         request.setURI(uriTaste);
+        logger.debug("создан http клиент");
 
         HttpResponse responseTaste = httpClient.execute(request);
         //then
@@ -239,8 +245,9 @@ public class TestRecipeMok extends AbstractTestSpooMok {
 
 
     @Test
-    @Disabled
     void equipmentByID() throws IOException {
+        logger.info("тест: equipmentByID - запущен");
+
         ObjectMapper mapper = new ObjectMapper();
 
         Equipment oven = new Equipment();
@@ -261,6 +268,9 @@ public class TestRecipeMok extends AbstractTestSpooMok {
         EquipmentRecipe equipmentRecipe = new EquipmentRecipe();
         equipmentRecipe.setEquipment(listRecipe);
 
+        logger.info("созданы данные для заглушки. тип: " + EquipmentRecipe.class);
+        logger.debug("создание мока для GET /recipes/1003464/equipmentWidget.json");
+
         stubFor(get(urlPathEqualTo("/recipes/1003464/equipmentWidget.json"))
                 .willReturn(aResponse()
                         .withStatus(200)
@@ -268,6 +278,8 @@ public class TestRecipeMok extends AbstractTestSpooMok {
 
         CloseableHttpClient httpClient = HttpClients.createDefault();
         HttpGet request = new HttpGet(getUrl() + "recipes/1003464/equipmentWidget.json");
+        logger.debug("создан http клиент");
+
         HttpResponse response = httpClient.execute(request);
 
         verify(getRequestedFor(urlEqualTo("/recipes/1003464/equipmentWidget.json")));
@@ -283,8 +295,9 @@ public class TestRecipeMok extends AbstractTestSpooMok {
 
 
     @Test
-    @Disabled
     void priceBreakdownByID() throws IOException {
+        logger.info("тест: priceBreakdownByID - запущен");
+
         ObjectMapper mapper = new ObjectMapper();
         Ingredient ingredient = new Ingredient();
         ingredient.setPrice(174.43f);
@@ -295,6 +308,9 @@ public class TestRecipeMok extends AbstractTestSpooMok {
         bodyResponse.setTotalCost(832.45f);
         bodyResponse.setTotalCostPerServing(104.06f);
 
+        logger.info("созданы данные для заглушки. тип: " + Ingredients.class);
+        logger.debug("создание мока для GET /recipes/1003464/priceBreakdownWidget.json");
+
         stubFor(get(urlPathEqualTo("/recipes/1003464/priceBreakdownWidget.json"))
                 .willReturn(aResponse()
                         .withStatus(200)
@@ -303,6 +319,8 @@ public class TestRecipeMok extends AbstractTestSpooMok {
 
         CloseableHttpClient httpClient = HttpClients.createDefault();
         HttpGet request = new HttpGet(getUrl() + "recipes/1003464/priceBreakdownWidget.json");
+        logger.debug("создан http клиент");
+
         HttpResponse httpResponse = httpClient.execute(request);
         Ingredients bodyCheck = mapper.readValue(httpResponse.getEntity().getContent(), Ingredients.class);
 
@@ -317,6 +335,7 @@ public class TestRecipeMok extends AbstractTestSpooMok {
 
     @Test
     void nutritionByID() throws IOException {
+        logger.info("тест: nutritionByID - запущен");
 
         RecipeNutrients recipe = new RecipeNutrients();
         recipe.setCalories(899);
@@ -325,6 +344,8 @@ public class TestRecipeMok extends AbstractTestSpooMok {
 
         ObjectMapper mapper = new ObjectMapper();
 
+        logger.info("созданы данные для заглушки. тип: " + RecipeNutrients.class);
+        logger.debug("создание мока для GET /recipes/1003464/nutritionWidget.json");
 
         stubFor(get(urlPathEqualTo("/recipes/1003464/nutritionWidget.json"))
                 .willReturn(aResponse()
@@ -333,6 +354,8 @@ public class TestRecipeMok extends AbstractTestSpooMok {
 
         CloseableHttpClient httpClient = HttpClients.createDefault();
         HttpGet request = new HttpGet(getUrl() + "recipes/1003464/nutritionWidget.json");
+        logger.debug("создан http клиент");
+
         //when
         HttpResponse response = httpClient.execute(request);
         //then
@@ -347,6 +370,8 @@ public class TestRecipeMok extends AbstractTestSpooMok {
 
     @Test
     void ingredientsByID() throws IOException {
+        logger.info("тест: ingredientsByID - запущен");
+
         Ingredients ingredients = new Ingredients();
         Ingredient blueberries = new Ingredient();
         blueberries.setName("blueberries");
@@ -356,6 +381,9 @@ public class TestRecipeMok extends AbstractTestSpooMok {
 
         ObjectMapper mapper = new ObjectMapper();
 
+        logger.info("созданы данные для заглушки. тип: " + Ingredients.class);
+        logger.debug("создание мока для GET /recipes/1003464/ingredientWidget.json");
+
         stubFor(get(urlPathEqualTo("/recipes/1003464/ingredientWidget.json"))
                 .willReturn(aResponse()
                         .withStatus(200)
@@ -363,6 +391,7 @@ public class TestRecipeMok extends AbstractTestSpooMok {
 
         CloseableHttpClient httpClient = HttpClients.createDefault();
         HttpGet request = new HttpGet(getUrl() + "recipes/1003464/ingredientWidget.json");
+        logger.debug("создан http клиент");
 
         HttpResponse response = httpClient.execute(request);
 
@@ -374,6 +403,8 @@ public class TestRecipeMok extends AbstractTestSpooMok {
 
     @Test
     void analyzeRecipe() throws IOException {
+        logger.info("тест: analyzeRecipe - запущен");
+        logger.debug("создание мока для POST /recipes/analyze");
 
         stubFor(post(urlPathEqualTo("/recipes/analyze"))
                 .withRequestBody(containing("Spaghetti Carbonara"))
@@ -402,8 +433,10 @@ public class TestRecipeMok extends AbstractTestSpooMok {
 
                         "}"
         ));
+        logger.debug("создан http клиент");
 
         HttpResponse response = httpClient.execute(request);
+
 
         verify(1, postRequestedFor(urlPathEqualTo("/recipes/analyze")));
         assertEquals(200, response.getStatusLine().getStatusCode());
@@ -412,8 +445,10 @@ public class TestRecipeMok extends AbstractTestSpooMok {
 
 
     @Test
-    @Disabled
     void summarizeRecipe() throws URISyntaxException, IOException {
+        logger.info("тест: summarizeRecipe - запущен");
+        logger.debug("создание мока для GET /recipes/4632/summary");
+
         stubFor(get(urlPathEqualTo("/recipes/4632/summary"))
                 .willReturn(aResponse()
                         .withStatus(200)
@@ -427,6 +462,7 @@ public class TestRecipeMok extends AbstractTestSpooMok {
                 .addParameter("apiKey", getApiKey())
                 .build();
         request.setURI(uriTaste);
+        logger.debug("создан http клиент");
 
         HttpResponse response = httpClient.execute(request);
         String strResponse = convertResponseToString(response);

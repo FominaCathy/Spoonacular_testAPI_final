@@ -13,9 +13,9 @@ import org.apache.http.impl.client.HttpClients;
 import org.example.Spoonacular.Aisle;
 import org.example.Spoonacular.Item;
 import org.example.Spoonacular.ShoppingList;
-import org.junit.jupiter.api.Disabled;
-import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.net.URI;
@@ -28,11 +28,13 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class TestMealPlanningMok extends AbstractTestSpooMok {
     private int calories = 2000;
+    private static final Logger logger = LoggerFactory.getLogger(TestMealPlanningMok.class);
 
 
     @Test
-    @Order(1)
     void addToMealPlan() throws IOException, URISyntaxException {
+        logger.info("тест: addToMealPlan - запущен" );
+        logger.debug("создание мока для POST /mealplanner/username/items");
 
         stubFor(post(urlPathEqualTo("/mealplanner/" + getUsername() + "/items"))
                 .withRequestBody(containing("INGREDIENTS"))
@@ -63,6 +65,8 @@ public class TestMealPlanningMok extends AbstractTestSpooMok {
                 .build();
 
         request.setURI(uri);
+        logger.debug("создан http клиент");
+
         HttpResponse response = httpClient.execute(request);
 
         verify(1, postRequestedFor(urlPathEqualTo("/mealplanner/" + getUsername() + "/items")));
@@ -70,8 +74,10 @@ public class TestMealPlanningMok extends AbstractTestSpooMok {
     }
 
     @Test
-    @Disabled
     void getMealPlanDay() throws IOException, URISyntaxException {
+        logger.info("тест: getMealPlanDay - запущен" );
+
+        logger.debug("создание мока для GET /mealplanner/username/day/2020-05-15");
 
         stubFor(get(urlPathMatching("/mealplanner/.*"))
                 .willReturn(aResponse().withStatus(200)));
@@ -84,6 +90,8 @@ public class TestMealPlanningMok extends AbstractTestSpooMok {
                 .build();
 
         request.setURI(uri);
+        logger.debug("создан http клиент");
+
         HttpResponse response = httpClient.execute(request);
 
         verify(1, getRequestedFor(urlPathMatching("/mealplanner/.*")));
@@ -93,8 +101,11 @@ public class TestMealPlanningMok extends AbstractTestSpooMok {
     }
 
     @Test
-    @Disabled
     void clearMealPlanDay() throws URISyntaxException, IOException {
+        logger.info("тест: clearMealPlanDay - запущен" );
+
+        logger.debug("создание мока для DELETE /mealplanner/username/day/2020-05-15");
+
         stubFor(delete(urlPathMatching("/mealplanner/.*"))
                 .willReturn(aResponse().withStatus(200)));
 
@@ -106,6 +117,8 @@ public class TestMealPlanningMok extends AbstractTestSpooMok {
                 .build();
 
         request.setURI(uri);
+        logger.debug("создан http клиент");
+
         HttpResponse response = httpClient.execute(request);
 
         verify(1, deleteRequestedFor(urlPathMatching("/mealplanner/.*")));
@@ -113,8 +126,10 @@ public class TestMealPlanningMok extends AbstractTestSpooMok {
     }
 
     @Test
-    @Order(4)
     void generateMealPlan() throws URISyntaxException, IOException {
+        logger.info("тест: generateMealPlan - запущен" );
+
+        logger.debug("создание мока для GET /mealplanner/generate");
 
         stubFor(get(urlPathEqualTo("/mealplanner/generate"))
                 .withQueryParam("timeFrame", WireMock.equalTo("day"))
@@ -130,6 +145,8 @@ public class TestMealPlanningMok extends AbstractTestSpooMok {
                 .build();
 
         request.setURI(uri);
+        logger.debug("создан http клиент");
+
         HttpResponse response = httpClient.execute(request);
 
         verify(1, getRequestedFor(urlPathEqualTo("/mealplanner/generate")));
@@ -137,8 +154,10 @@ public class TestMealPlanningMok extends AbstractTestSpooMok {
     }
 
     @Test
-    @Order(5)
     void generateShoppingList() throws URISyntaxException, IOException {
+        logger.info("тест: generateShoppingList - запущен" );
+
+        logger.debug("создание мока для GET /mealplanner/username/shopping-list/2020-05-15/2020-05-15");
 
         stubFor(get(urlPathMatching("/mealplanner/" + getUsername() + "/shopping-list/.*"))
                 .willReturn(aResponse()
@@ -152,6 +171,8 @@ public class TestMealPlanningMok extends AbstractTestSpooMok {
                 .build();
 
         request.setURI(uri);
+        logger.debug("создан http клиент");
+
         HttpResponse response = httpClient.execute(request);
 
         verify(1, getRequestedFor(urlPathMatching("/mealplanner/" + getUsername() + "/shopping-list/.*")));
@@ -160,8 +181,11 @@ public class TestMealPlanningMok extends AbstractTestSpooMok {
     }
 
     @Test
-    @Order(6)
     void addToShoppingList() throws IOException, URISyntaxException {
+        logger.info("тест: addToShoppingList - запущен" );
+        logger.debug("создание мока для POST /mealplanner/username/shopping-list/items");
+
+
         stubFor(post(urlPathEqualTo("/mealplanner/" + getUsername() + "/shopping-list/items"))
                 .withRequestBody(containing("baking"))
                 .willReturn(aResponse()
@@ -182,6 +206,8 @@ public class TestMealPlanningMok extends AbstractTestSpooMok {
                 .build();
 
         request.setURI(uri);
+        logger.debug("создан http клиент");
+
         HttpResponse response = httpClient.execute(request);
 
         verify(1, postRequestedFor(urlPathEqualTo("/mealplanner/" + getUsername() + "/shopping-list/items")));
@@ -189,27 +215,25 @@ public class TestMealPlanningMok extends AbstractTestSpooMok {
     }
 
     @Test
-    @Order(7)
     void getShoppingList() throws URISyntaxException, IOException {
+        logger.info("тест: getShoppingList - запущен" );
+
         ObjectMapper mapper = new ObjectMapper();
         Item baking = new Item();
         baking.setAisle("Baking");
         baking.setName("baking powder");
         baking.setCost(0.71);
 
-        stubFor(post(urlPathEqualTo("/mealplanner/" + getUsername() + "/shopping-list/items"))
-                .withRequestBody(containing("baking"))
+        logger.info("созданы данные для заглушки. тип: " + Item.class);
+        logger.debug("создание мока для GET /mealplanner/username/shopping-list/items");
+
+        stubFor(get(urlPathEqualTo("/mealplanner/" + getUsername() + "/shopping-list/items"))
                 .willReturn(aResponse()
                         .withStatus(200)
                         .withBody(mapper.writeValueAsString(baking))));
 
         CloseableHttpClient httpClient = HttpClients.createDefault();
-        HttpPost request = new HttpPost(getUrl() + "mealplanner/" + getUsername() + "/shopping-list/items");
-        request.setEntity(new StringEntity("{\n" +
-                "\t\"item\": \"1 package baking powder\",\n" +
-                "\t\"aisle\": \"Baking\",\n" +
-                "\t\"parse\": true\n" +
-                "}"));
+        HttpGet request = new HttpGet(getUrl() + "mealplanner/" + getUsername() + "/shopping-list/items");
 
         URI uri = new URIBuilder(request.getURI())
                 .addParameter("apiKey", getApiKey())
@@ -217,9 +241,11 @@ public class TestMealPlanningMok extends AbstractTestSpooMok {
                 .build();
 
         request.setURI(uri);
+        logger.debug("создан http клиент");
+
         HttpResponse response = httpClient.execute(request);
 
-        verify(1, postRequestedFor(urlPathEqualTo("/mealplanner/" + getUsername() + "/shopping-list/items")));
+        verify(1, getRequestedFor(urlPathEqualTo("/mealplanner/" + getUsername() + "/shopping-list/items")));
         assertEquals(200, response.getStatusLine().getStatusCode());
         Item checkBody = mapper.readValue(response.getEntity().getContent(), Item.class);
         assertEquals("baking powder", checkBody.getName());
@@ -229,8 +255,9 @@ public class TestMealPlanningMok extends AbstractTestSpooMok {
 
 
     @Test
-    @Order(8)
     void computeShoppingList() throws URISyntaxException, IOException {
+        logger.info("тест: computeShoppingList - запущен" );
+
         ObjectMapper mapper = new ObjectMapper();
         ShoppingList shoppingList = new ShoppingList();
         List<Aisle> aisles = new ArrayList<>();
@@ -239,6 +266,9 @@ public class TestMealPlanningMok extends AbstractTestSpooMok {
         aisles.add(tomatoes);
         aisles.add(oile);
         shoppingList.setAisles(aisles);
+
+        logger.info("созданы данные для заглушки. тип: " + ShoppingList.class);
+        logger.debug("создание мока для POST /mealplanner/username/shopping-list/compute");
 
         stubFor(post(urlPathEqualTo("/mealplanner/shopping-list/compute"))
                 .withRequestBody(containing("tomatoes"))
@@ -264,6 +294,8 @@ public class TestMealPlanningMok extends AbstractTestSpooMok {
                 .build();
 
         request.setURI(uri);
+        logger.debug("создан http клиент");
+
         HttpResponse response = httpClient.execute(request);
 
         verify(1, postRequestedFor(urlPathEqualTo("/mealplanner/shopping-list/compute")));
