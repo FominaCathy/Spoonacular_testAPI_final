@@ -2,12 +2,13 @@ package Spoonacular;
 
 import io.restassured.http.ContentType;
 import io.restassured.http.Method;
-import io.restassured.path.json.JsonPath;
 import org.example.Spoonacular.Equipment;
 import org.example.Spoonacular.EquipmentRecipe;
 import org.example.Spoonacular.Taste;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.yaml.snakeyaml.Yaml;
 
 import java.io.File;
@@ -22,12 +23,13 @@ import static io.restassured.RestAssured.given;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
 
-
 public class TestRecipe extends AbstractTestSpoo {
     private static HashMap<String, String> recipe;
+    private static final Logger logger = LoggerFactory.getLogger(TestRecipe.class);
 
     public TestRecipe() throws FileNotFoundException {
-        //данные для запросов Recipe
+
+        logger.info("Получение данных для запросов Recipe из yaml-файла");//
         InputStream inputStream = new FileInputStream(new File("src/main/resources/recipe.yml"));
         Yaml yaml = new Yaml();
         recipe = yaml.loadAs(inputStream, HashMap.class);
@@ -36,6 +38,7 @@ public class TestRecipe extends AbstractTestSpoo {
 
     @Test
     void searchRecipes() {
+        logger.info("Тест GET search Recipes запущен");//
 
         given()
                 .queryParam("apiKey", getApiKey())
@@ -53,6 +56,8 @@ public class TestRecipe extends AbstractTestSpoo {
 
     @Test
     void searchRecipesByNutrients() {
+        logger.info("Тест GET search Recipes By Nutrients запущен");//
+
         int maxCalory = 500;
 
         given()
@@ -65,12 +70,13 @@ public class TestRecipe extends AbstractTestSpoo {
                 .statusCode(200)
                 .assertThat()
                 .body("calories", everyItem(lessThanOrEqualTo(maxCalory)))
-                ;
+        ;
     }
-
 
     @Test
     void getRandomRecipes() {
+        logger.info("Тест GET getRandomRecipes запущен");//
+
         String tags = given()
                 .queryParam("apiKey", getApiKey())
                 .queryParam("tags", "vegetarian")
@@ -87,9 +93,10 @@ public class TestRecipe extends AbstractTestSpoo {
 
     }
 
-
     @Test
     void autocompleteRecipeSearch() {
+        logger.info("Тест GET autocompleteRecipeSearch запущен");//
+
         given()
                 .queryParam("apiKey", getApiKey())
                 .queryParam("query", "chick")
@@ -105,9 +112,10 @@ public class TestRecipe extends AbstractTestSpoo {
 
     }
 
-
     @Test
     void tasteByID() {
+        logger.info("Тест GET tasteByID запущен");//
+
         Taste taste = given()
                 .queryParam("apiKey", getApiKey())
                 .contentType("application/json")
@@ -125,6 +133,8 @@ public class TestRecipe extends AbstractTestSpoo {
 
     @Test
     void equipmentByID() {
+        logger.info("Тест GET equipmentByID запущен");//
+
         EquipmentRecipe equipmentRecipe = given()
                 .queryParam("apiKey", getApiKey())
                 .when()
@@ -143,9 +153,10 @@ public class TestRecipe extends AbstractTestSpoo {
         assertThat(listExp, containsInAnyOrder("oven", "pie form", "bowl", "frying pan"));
     }
 
-
     @Test
     void priceBreakdownByID() {
+        logger.info("Тест GET priceBreakdownByID запущен");//
+
         given()
                 .queryParam("apiKey", getApiKey())
                 .when()
@@ -160,9 +171,9 @@ public class TestRecipe extends AbstractTestSpoo {
 
     }
 
-
     @Test
     void nutritionByID() {
+        logger.info("Тест GET nutritionByID запущен");//
 
         given()
                 .queryParam("apiKey", getApiKey())
@@ -176,9 +187,10 @@ public class TestRecipe extends AbstractTestSpoo {
                 .body("carbs", equalTo("111g"));
     }
 
-
     @Test
     void ingredientsByID() {
+        logger.info("Тест GET ingredientsByID запущен");//
+
         given()
                 .queryParam("apiKey", getApiKey())
                 .when()
@@ -195,6 +207,8 @@ public class TestRecipe extends AbstractTestSpoo {
 
     @Test
     void analyzeRecipe() {
+        logger.info("Тест POST analyzeRecipe запущен");//
+
         String title = given()
                 .queryParam("apiKey", getApiKey())
                 .body("{\n" +
@@ -225,10 +239,9 @@ public class TestRecipe extends AbstractTestSpoo {
         assertThat(title, equalTo("Spaghetti Carbonara"));
     }
 
-
     @Test
-
     void summarizeRecipe() {
+        logger.info("Тест GET summarizeRecipe запущен");//
 
         given()
                 .when()

@@ -49,6 +49,13 @@
             <scope>test</scope>
         </dependency>
 
+        <dependency>
+            <groupId>org.yaml</groupId>
+            <artifactId>snakeyaml</artifactId>
+            <version>2.2</version>
+        </dependency>
+
+
         <!-- для обычных тестов -->
         <dependency>
             <groupId>com.fasterxml.jackson.core</groupId>
@@ -56,13 +63,13 @@
             <version>2.15.0</version>
         </dependency>
 
-        <!-- для Мок-тестов -->
-        <dependency>
-            <groupId>com.github.tomakehurst</groupId>
-            <artifactId>wiremock</artifactId>
-            <version>3.0.1</version>
-            <scope>test</scope>
-        </dependency>
+<!--        &lt;!&ndash; для Мок-тестов &ndash;&gt;-->
+<!--        <dependency>-->
+<!--            <groupId>com.github.tomakehurst</groupId>-->
+<!--            <artifactId>wiremock</artifactId>-->
+<!--            <version>3.0.1</version>-->
+<!--            <scope>test</scope>-->
+<!--        </dependency>-->
 
         <!-- для логгирования -->
         <dependency>
@@ -84,8 +91,15 @@
             <version>2.0.9</version>
         </dependency>
 
-
+        <dependency>
+            <groupId>io.qameta.allure</groupId>
+            <artifactId>allure-junit5</artifactId>
+            <version>2.22.1</version>
+        </dependency>
     </dependencies>
+
+
+
 
     <!-- Сборка -->
     <build>
@@ -102,6 +116,47 @@
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>
                 <version>2.22.2</version>
+            </plugin>
+
+            <plugin>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <version>2.21.0</version>
+                <configuration>
+                    <testFailureIgnore>false</testFailureIgnore>
+                    <argLine>
+                        -javaagent:"${settings.localRepository}/org/aspectj/aspectjweaver/1.8.10/aspectjweaver-1.8.10.jar"
+                    </argLine>
+                    <systemProperties>
+                        <property>
+                            <name>junit.jupiter.extensions.autodetection.enabled</name>
+                            <value>true</value>
+                        </property>
+                    </systemProperties>
+                </configuration>
+                <dependencies>
+                    <dependency>
+                        <groupId>org.junit.platform</groupId>
+                        <artifactId>junit-platform-surefire-provider</artifactId>
+                        <version>1.2.0</version>
+                    </dependency>
+                    <dependency>
+                        <groupId>org.aspectj</groupId>
+                        <artifactId>aspectjweaver</artifactId>
+                        <version>1.8.10</version>
+                    </dependency>
+                </dependencies>
+            </plugin>
+            <plugin>
+                <groupId>io.qameta.allure</groupId>
+                <artifactId>allure-maven</artifactId>
+                <version>2.12.0</version>
+                <configuration>
+                    <!-- На момент написания лекции соответствующий архив не доступен,
+                    закомментируйте строку-->
+                    <!--<reportVersion>2.4.1</reportVersion>-->
+                    <!-- Добавим адрес директории для генератора отчета -->
+                    <buildDirectory>C:\JAVA\Spoonacular\</buildDirectory>
+                </configuration>
             </plugin>
 
         </plugins>

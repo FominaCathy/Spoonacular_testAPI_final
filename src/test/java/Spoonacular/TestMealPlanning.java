@@ -8,16 +8,19 @@ import static io.restassured.RestAssured.given;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.hasSize;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class TestMealPlanning extends AbstractTestSpoo {
     private int calories = 2000;
-    private String idBanana;
+    String idBanana;
+    private static final Logger logger = LoggerFactory.getLogger(TestMealPlanning.class);
 
 
     @Test
     @Order(1)
     void addToMealPlan() {
-
+        logger.info("тест POST Add to Meal Plan - запущен");
         idBanana = given()
                 .queryParam("apiKey", getApiKey())
                 .queryParam("hash", getHash())
@@ -42,13 +45,13 @@ public class TestMealPlanning extends AbstractTestSpoo {
                 .jsonPath()
                 .get("id")
                 .toString();
-
-
     }
 
     @Test
     @Order(2)
     void getMealPlanDay() {
+        logger.info("тест GET  Get Meal Plan Day - запущен");
+
         given()
                 .queryParam("apiKey", getApiKey())
                 .queryParam("hash", getHash())
@@ -62,6 +65,8 @@ public class TestMealPlanning extends AbstractTestSpoo {
     @Test
     @Order(3)
     void clearMealPlanDay() {
+        logger.info("тест DELETE  Clear Meal Plan Day - запущен");
+
         given()
                 .queryParam("apiKey", getApiKey())
                 .queryParam("hash", getHash())
@@ -74,6 +79,7 @@ public class TestMealPlanning extends AbstractTestSpoo {
     @Test
     @Order(4)
     void generateMealPlan() {
+        logger.info("тест GET  Generate Meal Plan - запущен");
 
         given()
                 .queryParam("apiKey", getApiKey())
@@ -89,24 +95,28 @@ public class TestMealPlanning extends AbstractTestSpoo {
     @Test
     @Order(5)
     void generateShoppingList() {
+        logger.info("тест POST Generate Shopping List - запущен");
+
         given()
                 .queryParam("apiKey", getApiKey())
                 .queryParam("hash", getHash())
                 .when()
-                .get(getUrl() + "mealplanner/" + getUsername() + "/shopping-list/2020-05-15/2020-05-15")
+                .post(getUrl() + "mealplanner/" + getUsername() + "/shopping-list/2020-05-15/2020-05-15")
                 .then()
                 .statusCode(200)
         ;
+
+
     }
 
 //    @Test
-//    @Disabled
+//
 //    void deleteShoppingList() {
 //        given()
 //                .queryParam("apiKey", getApiKey())
 //                .queryParam("hash", getHash())
 //                .when()
-//                .delete(getUrl() + "mealplanner/" + getUsername() + "/shopping-list/items/" + 1726144)
+//                .delete(getUrl() + "mealplanner/" + getUsername() + "/shopping-list/items/" + id)
 //                .then()
 //                .statusCode(200);
 //    }
@@ -114,6 +124,8 @@ public class TestMealPlanning extends AbstractTestSpoo {
     @Test
     @Order(6)
     void addToShoppingList() {
+        logger.info("тест POST Add to Shopping List - запущен");
+
         String id = given()
                 .queryParam("apiKey", getApiKey())
                 .queryParam("hash", getHash())
@@ -144,6 +156,8 @@ public class TestMealPlanning extends AbstractTestSpoo {
     @Test
     @Order(7)
     void getShoppingList() {
+        logger.info("тест GET Get Shopping List - запущен");
+
         String id = given()
                 .queryParam("apiKey", getApiKey())
                 .queryParam("hash", getHash())
@@ -160,18 +174,6 @@ public class TestMealPlanning extends AbstractTestSpoo {
                 .jsonPath()
                 .get("id")
                 .toString();
-        //вариант с json
-//        JsonPath response = given()
-//                .queryParam("apiKey", getApiKey())
-//                .queryParam("hash", getHash())
-//                .when()
-//                .get(getUrl() + "mealplanner/" + getUsername() + "/shopping-list")
-//                .body()
-//                .jsonPath();
-//
-//        assertThat(response.get("cost"), equalTo(0.71F));
-//        assertThat(response.get("aisles[0].items[0].name"), equalTo("baking powder"));
-//        assertThat(response.get("aisles[0].items[0].measures.original.amount"), equalTo(1.0f));
 
         // вариант с jackson
         ShoppingList shoppingList = given()
@@ -193,13 +195,14 @@ public class TestMealPlanning extends AbstractTestSpoo {
                 .delete(getUrl() + "mealplanner/" + getUsername() + "/shopping-list/items/" + id)
                 .then()
                 .statusCode(200);
-
     }
 
 
     @Test
     @Order(8)
     void computeShoppingList() {
+        logger.info("тест POST Compute Shopping List - запущен");
+
         given()
                 .queryParam("apiKey", getApiKey())
                 .body("{\n" +

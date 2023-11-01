@@ -1,6 +1,6 @@
 package Spoonacular;
 
-import com.github.tomakehurst.wiremock.matching.StringValuePattern;
+
 import org.junit.jupiter.api.BeforeAll;
 
 import java.io.FileInputStream;
@@ -8,12 +8,15 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.Properties;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 public abstract class AbstractTestSpoo {
     private static String apiKey;
     private static String urlSpoo;
     private static String hash_test;
     private static String username;
-
+    private static final Logger logger = LoggerFactory.getLogger(AbstractTestSpoo.class);
 
 
     @BeforeAll
@@ -25,6 +28,7 @@ public abstract class AbstractTestSpoo {
         urlSpoo = props.getProperty("url");
         hash_test = props.getProperty("hash_spoo");
         username = props.getProperty("username");
+        logger.info("Загрузка данных из файла .properties");
 
     }
 
