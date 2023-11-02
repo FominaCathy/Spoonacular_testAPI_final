@@ -20,6 +20,7 @@ public abstract class AbstractTestSpoo {
 
 
     @BeforeAll
+
     static void setUp() throws IOException {
         Properties props = new Properties();
         InputStream dataFile = new FileInputStream("src/main/resources/spoonacular.properties");

@@ -1,11 +1,13 @@
 package Spoonacular;
 
+import io.qameta.allure.*;
 import io.restassured.http.ContentType;
 import io.restassured.http.Method;
 import org.example.Spoonacular.Equipment;
 import org.example.Spoonacular.EquipmentRecipe;
 import org.example.Spoonacular.Taste;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -23,6 +25,7 @@ import static io.restassured.RestAssured.given;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
 
+@Epic(value = "Тестирование API https://spoonacular.com/food-api/")
 public class TestRecipe extends AbstractTestSpoo {
     private static HashMap<String, String> recipe;
     private static final Logger logger = LoggerFactory.getLogger(TestRecipe.class);
@@ -37,6 +40,10 @@ public class TestRecipe extends AbstractTestSpoo {
     }
 
     @Test
+    @Owner("Fomina Kat")
+    @DisplayName("Search Recipes using advanced filtering")
+    @Story(value = "Recipes")
+    @Severity(SeverityLevel.NORMAL)
     void searchRecipes() {
         logger.info("Тест GET search Recipes запущен");//
 
@@ -55,6 +62,10 @@ public class TestRecipe extends AbstractTestSpoo {
     }
 
     @Test
+    @Owner("Fomina Kat")
+    @DisplayName("Search Recipes by Nutrients")
+    @Story(value = "Recipes")
+    @Severity(SeverityLevel.NORMAL)
     void searchRecipesByNutrients() {
         logger.info("Тест GET search Recipes By Nutrients запущен");//
 
@@ -74,6 +85,10 @@ public class TestRecipe extends AbstractTestSpoo {
     }
 
     @Test
+    @Owner("Fomina Kat")
+    @DisplayName("Get Random Recipes")
+    @Story(value = "Recipes")
+    @Severity(SeverityLevel.NORMAL)
     void getRandomRecipes() {
         logger.info("Тест GET getRandomRecipes запущен");//
 
@@ -94,6 +109,10 @@ public class TestRecipe extends AbstractTestSpoo {
     }
 
     @Test
+    @Owner("Fomina Kat")
+    @DisplayName("Autocomplete Recipe Search")
+    @Story(value = "Recipes")
+    @Severity(SeverityLevel.CRITICAL)
     void autocompleteRecipeSearch() {
         logger.info("Тест GET autocompleteRecipeSearch запущен");//
 
@@ -113,6 +132,10 @@ public class TestRecipe extends AbstractTestSpoo {
     }
 
     @Test
+    @Owner("Fomina Kat")
+    @DisplayName("Taste by ID")
+    @Story(value = "Recipes")
+    @Severity(SeverityLevel.MINOR)
     void tasteByID() {
         logger.info("Тест GET tasteByID запущен");//
 
@@ -132,6 +155,10 @@ public class TestRecipe extends AbstractTestSpoo {
     }
 
     @Test
+    @Owner("Fomina Kat")
+    @DisplayName("Equipment by ID")
+    @Story(value = "Recipes")
+    @Severity(SeverityLevel.NORMAL)
     void equipmentByID() {
         logger.info("Тест GET equipmentByID запущен");//
 
@@ -154,6 +181,10 @@ public class TestRecipe extends AbstractTestSpoo {
     }
 
     @Test
+    @Owner("Fomina Kat")
+    @DisplayName("Price Breakdown by ID")
+    @Story(value = "Recipes")
+    @Severity(SeverityLevel.MINOR)
     void priceBreakdownByID() {
         logger.info("Тест GET priceBreakdownByID запущен");//
 
@@ -172,6 +203,10 @@ public class TestRecipe extends AbstractTestSpoo {
     }
 
     @Test
+    @Owner("Fomina Kat")
+    @DisplayName("Nutrition by ID")
+    @Story(value = "Recipes")
+    @Severity(SeverityLevel.NORMAL)
     void nutritionByID() {
         logger.info("Тест GET nutritionByID запущен");//
 
@@ -188,6 +223,10 @@ public class TestRecipe extends AbstractTestSpoo {
     }
 
     @Test
+    @Owner("Fomina Kat")
+    @DisplayName("Ingredients by ID")
+    @Story(value = "Recipes")
+    @Severity(SeverityLevel.NORMAL)
     void ingredientsByID() {
         logger.info("Тест GET ingredientsByID запущен");//
 
@@ -206,6 +245,10 @@ public class TestRecipe extends AbstractTestSpoo {
     }
 
     @Test
+    @Owner("Fomina Kat")
+    @DisplayName("Analyze Recipe")
+    @Story(value = "Recipes")
+    @Severity(SeverityLevel.NORMAL)
     void analyzeRecipe() {
         logger.info("Тест POST analyzeRecipe запущен");//
 
@@ -240,6 +283,10 @@ public class TestRecipe extends AbstractTestSpoo {
     }
 
     @Test
+    @Owner("Fomina Kat")
+    @DisplayName("Summarize Recipe")
+    @Story(value = "Recipes")
+    @Severity(SeverityLevel.NORMAL)
     void summarizeRecipe() {
         logger.info("Тест GET summarizeRecipe запущен");//
 

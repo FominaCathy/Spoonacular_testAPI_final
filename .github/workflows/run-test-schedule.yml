@@ -1,0 +1,22 @@
+name: Test API Spoonacular CI (Environment = windows)
+run-name: ${{ github.actor }} is testing CI API Spoonacular 🚀
+on:
+  schedule:
+    - cron: '* 9 * * *' # каждый день в 9 утра
+jobs:
+  run-tests:
+    runs-on: windows-latest
+    steps:
+      - run: echo "The job was automatically triggered by a  ${{ github.event_name }} event. "
+      - run: echo "Running on a ${{ runner.os }} server hosted by GitHub!"
+      - run: echo "The branch - ${{ github.ref }}, repository -${{ github.repository }}."
+      - name: Check out repository code
+        uses: actions/checkout@v3
+      - name: Set up JDK 17
+        uses: actions/setup-java@v3
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+      - name: Build with Maven
+        run: mvn --batch-mode --update-snapshots package
+      - run: echo "This job's status is ${{ job.status }}."
